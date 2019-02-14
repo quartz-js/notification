@@ -1,0 +1,16 @@
+{
+  "$quartz": {
+    "data": {
+      "notification": {
+        "name": "Notification",
+        "description": "Notification",
+        "attributes": {
+          "name": {
+            "label": "name",
+            "description": "Identify the record by a human-readable string"
+          }
+        }
+      }
+    }
+  }  
+}
