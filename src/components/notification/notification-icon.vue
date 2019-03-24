@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <v-menu :nudge-width="400" nudge-top="-51" nudge-left='50' v-if="notifications">
       <v-btn flat icon v-if="notifications.meta.pagination.total" slot="activator" ><v-badge color="red" overlap>
         <span slot="badge">{{ notifications.meta.pagination.total }}</span>
@@ -128,8 +127,6 @@ export default {
       var api = new UserNotificationApi()
       api.index({ show: 10, query: 'read_at is null', sort_field: 'created_at', sort_direction: 'DESC' }).then(response => {
         this.notifications = response.body
-      }).catch(response => {
-
       })
     }
   }
