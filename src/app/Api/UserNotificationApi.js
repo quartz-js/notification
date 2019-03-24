@@ -15,7 +15,7 @@ export class UserNotificationApi extends ResourceApi {
    * @return {Promise}
    */
   index (params) {
-    return Vue.http.get(this.getFullUrl(), { params: params, headers: { Authorization: 'Bearer ' + this.access_token }}).then(this.parse)
+    return Vue.http.get(this.getFullUrl(), { params: params, headers: { Authorization: 'Bearer ' + this.access_token }}).then((response) => { return this.parse(response); })
   }
 
   /**
