@@ -62,7 +62,7 @@ export default {
     }
   },
   created () {
-    if (process.env.WEBSOCKET_URL) {
+    if (container.get('config').app.websocket.url) {
       window.Echo.private('user.' + this.user.id).listen('NotificationEvent', (e) => {
         this.load()
 
