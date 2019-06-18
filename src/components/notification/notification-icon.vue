@@ -66,6 +66,18 @@ export default {
       window.Echo.private('user.' + this.user.id).listen('NotificationEvent', (e) => {
         this.load()
 
+        let key = `notification.${e.id}`;
+
+        if (localStorage.getItem(key)) {
+          return;
+        }
+        
+        localStorage.setItem(key, 1);
+
+        setTimeout(function () {
+          localStorage.removeItem(key);
+        }, 10);
+
         window.Notify.prompt(e.title, {
           'body': e.message,
           'icon': require('@/assets/logo.png')
