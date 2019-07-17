@@ -49,7 +49,7 @@
 <script>
 import { UserNotificationApi } from '../../app/Api/UserNotificationApi'
 import moment from 'moment'
-import { container, mixins } from '@railken/quartz-core'
+import { container, mixins } from '@quartz/core'
 
 export default {
   props: ['user'],
@@ -79,7 +79,6 @@ export default {
   },
   methods: {
     markAsRead (notification) {
-      console.log(notification)
       var api = new UserNotificationApi()
       api.markAsRead(notification.id).then(response => {
         return this.load()
