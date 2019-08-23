@@ -1,18 +1,20 @@
 <template>
   <div>
     <v-menu :nudge-width="400" nudge-top="-51" nudge-left='50' v-if="notifications">
-      <v-btn flat icon v-if="notifications.meta.pagination.total" slot="activator" ><v-badge color="red" overlap>
-        <span slot="badge">{{ notifications.meta.pagination.total }}</span>
-        <v-icon class="outlined">far fa-bell</v-icon>
-      </v-badge></v-btn>
 
-      <v-btn icon v-if="!notifications.meta.pagination.total" slot="activator">
-         <v-icon>far fa-bell</v-icon>
-      </v-btn>
-
-        <v-subheader  class="headline primary" dark primary-title>
-          {{ $t('$quartz.notification.title') }}
-        </v-subheader>
+      <template v-slot:activator="{ on }">
+        <v-btn v-on="on" text icon >
+          <v-badge color="red" overlap v-if="notifications.meta.pagination.total">
+            <span slot="badge">{{ notifications.meta.pagination.total }}</span>
+            <v-icon class="outlined" >far fa-bell</v-icon>
+          </v-badge>
+          <v-icon v-else>far fa-bell</v-icon>
+        </v-btn>
+        </v-btn>
+      </template>
+      <v-subheader  class="headline primary" dark primary-title>
+        {{ $t('$quartz.notification.title') }}
+      </v-subheader>
       <v-list>
         <v-list-tile v-for="(notification, index) in notifications.data" :key="index"  v-if="notification.data.message" @click="onClickNotification(notification)">
           <v-list-tile-action>
@@ -35,7 +37,7 @@
           </v-list-tile-content>
         </v-list-tile>
         <v-list-tile :to="{ name: 'notifications.user' }">
-          <v-list-tile-content>
+          <v-list-tile-content class="pa-3">
             <v-list-tile-title>
               {{ $t('$quartz.notification.show_all') }}
             </v-list-tile-title>

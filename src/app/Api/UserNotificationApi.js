@@ -1,8 +1,4 @@
-import Vue from 'vue'
 import { ResourceApi } from '@quartz/core'
-import VueResource from 'vue-resource'
-
-Vue.use(VueResource)
 
 export class UserNotificationApi extends ResourceApi {
   resource_url = '/user/notifications';
@@ -15,7 +11,7 @@ export class UserNotificationApi extends ResourceApi {
    * @return {Promise}
    */
   index (params) {
-    return Vue.http.get(this.getFullUrl(), { params: params, headers: { Authorization: 'Bearer ' + this.access_token }}).then((response) => { return this.parse(response); })
+    return this.get('', { params: params})
   }
 
   /**
@@ -27,7 +23,7 @@ export class UserNotificationApi extends ResourceApi {
    * @return {Promise}
    */
   show (id, params) {
-    return Vue.http.get(this.getFullUrl() + '/' + id, { params: params, headers: { Authorization: 'Bearer ' + this.access_token }})
+    return this.get('/' + id, { params: params })
   }
 
   /**
@@ -38,7 +34,7 @@ export class UserNotificationApi extends ResourceApi {
    * @return {Promise}
    */
   markAsRead (id) {
-    return Vue.http.post(this.getFullUrl() + '/' + id + '/read', {}, { headers: { Authorization: 'Bearer ' + this.access_token }})
+    return this.post('/' + id + '/read')
   }
 
   /**
@@ -49,6 +45,6 @@ export class UserNotificationApi extends ResourceApi {
    * @return {Promise}
    */
   markAsUnread (id) {
-    return Vue.http.post(this.getFullUrl() + '/' + id + '/unread', {}, { headers: { Authorization: 'Bearer ' + this.access_token }})
+    return this.post('/' + id + '/unread')
   }
 };
