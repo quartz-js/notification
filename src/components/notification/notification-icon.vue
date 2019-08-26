@@ -6,24 +6,24 @@
         <v-btn v-on="on" text icon >
           <v-badge color="red" overlap v-if="notifications.meta.pagination.total">
             <span slot="badge">{{ notifications.meta.pagination.total }}</span>
-            <v-icon class="outlined" >far fa-bell</v-icon>
+            <q-icon>far fa-bell</q-icon>
           </v-badge>
-          <v-icon v-else>far fa-bell</v-icon>
+          <q-icon v-else>far fa-bell</q-icon>
         </v-btn>
         </v-btn>
       </template>
-      <v-subheader  class="headline primary" dark primary-title>
+      <v-subheader class="headline primary" dark primary-title>
         {{ $t('$quartz.notification.title') }}
       </v-subheader>
       <v-list>
-        <v-list-tile v-for="(notification, index) in notifications.data" :key="index"  v-if="notification.data.message" @click="onClickNotification(notification)">
-          <v-list-tile-action>
-            <v-icon color="primary" v-if="getNotificationType(notification) === 'file'">attach_file</v-icon>
-            <v-icon color="error" v-if="getNotificationType(notification) === 'error'">warning</v-icon>
-            <v-icon color="primary" v-if="getNotificationType(notification) === 'info'">lens</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>
+        <v-list-item v-for="(notification, index) in notifications.data" :key="index"  v-if="notification.data.message" @click="onClickNotification(notification)">
+          <v-list-item-action>
+            <q-icon color="primary" v-if="getNotificationType(notification) === 'file'">attach_file</q-icon>
+            <q-icon color="error" v-if="getNotificationType(notification) === 'error'">warning</q-icon>
+            <q-icon color="primary" v-if="getNotificationType(notification) === 'info'">lens</q-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>
               {{ notification.data.message }}
 
               <span v-if="getNotificationType(notification) === 'error'">:
@@ -31,18 +31,18 @@
                   {{ notification.data. options.error.message }}
                 </small>
               </span>
-            </v-list-tile-title>
+            </v-list-item-title>
 
-            <v-list-tile-sub-title >{{ moment(notification.created_at).fromNow() }}</v-list-tile-sub-title>
-          </v-list-tile-content>
-        </v-list-tile>
-        <v-list-tile :to="{ name: 'notifications.user' }">
-          <v-list-tile-content class="pa-3">
-            <v-list-tile-title>
+            <v-list-item-subtitle >{{ moment(notification.created_at).fromNow() }}</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item :to="{ name: 'notifications.user' }">
+          <v-list-item-content>
+            <v-list-item-title>
               {{ $t('$quartz.notification.show_all') }}
-            </v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-menu>
   </div>
