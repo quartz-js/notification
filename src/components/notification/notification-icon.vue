@@ -97,7 +97,9 @@ export default {
       api.markAsRead(notification.id).then(response => {
         return this.load()
       }).catch(response => {
-
+        if (response instanceof Error) {
+          throw response
+        }
       })
     },
 
