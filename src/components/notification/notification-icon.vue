@@ -139,6 +139,7 @@ export default {
       this.markAsRead(notification)
     },
     load () {
+      return;
       var api = new UserNotificationApi()
       api.index({ show: 10, query: 'read_at is null', sort_field: 'created_at', sort_direction: 'DESC' }).then(response => {
         this.notifications = response.body
