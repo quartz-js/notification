@@ -49,7 +49,6 @@
 </template>
 
 <script>
-import { UserNotificationApi } from '../../app/Api/UserNotificationApi'
 import moment from 'moment'
 import { container, mixins } from '@quartz/core'
 
@@ -89,12 +88,12 @@ export default {
     }
   },
   mounted () {
+    this.api = this.$container.get('data-view').newApiByName('notification')
     this.load()
   },
   methods: {
     markAsRead (notification) {
-      var api = new UserNotificationApi()
-      api.markAsRead(notification.id).then(response => {
+      this.api.store(`id eq "${notification.id}"`, {read_at: moment().format("YYYY-MM-DD hh:mm:ss") }).then(response => {
         return this.load()
       }).catch(response => {
         if (response instanceof Error) {
@@ -139,9 +138,7 @@ export default {
       this.markAsRead(notification)
     },
     load () {
-      return;
-      var api = new UserNotificationApi()
-      api.index({ show: 10, query: 'read_at is null', sort_field: 'created_at', sort_direction: 'DESC' }).then(response => {
+      this.api.index({ show: 10, query: 'read_at is null', sort_field: 'created_at', sort_direction: 'DESC' }).then(response => {
         this.notifications = response.body
       })
     }
