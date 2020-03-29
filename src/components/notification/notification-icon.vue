@@ -1,11 +1,17 @@
 <template>
   <div>
-    <v-menu :nudge-width="400" nudge-top="-51" nudge-left='50' v-if="notifications">
+    <v-menu 
+      :nudge-width="400" 
+      nudge-top="-51" 
+      nudge-left='50' 
+      v-if="notifications" 
+      :close-on-content-click="false"
+    >
 
       <template v-slot:activator="{ on }">
         <v-btn v-on="on" text icon >
-          <v-badge color="red" overlap v-if="notifications.meta.pagination.total">
-            <span slot="badge">{{ notifications.meta.pagination.total }}</span>
+          <v-badge color="red" overlap v-if="total">
+            <span slot="badge">{{ total }}</span>
             <q-icon>far fa-bell</q-icon>
           </v-badge>
           <q-icon v-else>far fa-bell</q-icon>
@@ -15,35 +21,49 @@
       <v-subheader class="headline primary" dark primary-title>
         {{ $t('$quartz.notification.title') }}
       </v-subheader>
-      <v-list>
-        <v-list-item v-for="(notification, index) in notifications.data" :key="index"  v-if="notification.data.message" @click="onClickNotification(notification)">
-          <v-list-item-action>
-            <q-icon color="primary" v-if="getNotificationType(notification) === 'file'">attach_file</q-icon>
-            <q-icon color="error" v-if="getNotificationType(notification) === 'error'">warning</q-icon>
-            <q-icon color="primary" v-if="getNotificationType(notification) === 'info'">lens</q-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>
-              {{ notification.data.message }}
 
-              <span v-if="getNotificationType(notification) === 'error'">:
-                <small class='text-danger'>
-                  {{ notification.data. options.error.message }}
+      <v-card>
+        <v-list class="pa-0" v-for="(notification, index) in notifications.data" :key="index"  v-if="notification.data.message" @click="markAsRead(notification)">
+          <v-list-item >
+            <v-list-item-action class="mr-3">
+              <q-icon color="primary" v-if="!notification.read_at">lens</q-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>
+                {{ notification.data.message }}
+
+                <span v-if="getNotificationType(notification) === 'error'">:
+                  <small class='text-danger'>
+                    {{ notification.data.options.error.message }}
+                    
+                  </small>
+                </span>
+
+                <small class='text-info'>
+                  <div v-if="hasAttachment(notification)" @click="downloadAttachment(notification)">
+                    <a click='javascript:return;'>Download</a>
+                  </div>
                 </small>
-              </span>
-            </v-list-item-title>
 
-            <v-list-item-subtitle >{{ moment(notification.created_at).fromNow() }}</v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item :to="{ name: 'notifications.user' }">
-          <v-list-item-content>
-            <v-list-item-title>
-              {{ $t('$quartz.notification.show_all') }}
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
+              </v-list-item-title>
+
+              <v-list-item-subtitle >{{ moment(notification.created_at).fromNow() }}</v-list-item-subtitle>
+            </v-list-item-content>
+
+          </v-list-item>
+          <v-divider></v-divider>
+        </v-list>
+
+        <v-list>
+          <v-list-item :to="{ name: 'notifications.user' }">
+            <v-list-item-content>
+              <v-list-item-title>
+                {{ $t('$quartz.notification.show_all') }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-card>
     </v-menu>
   </div>
 </template>
@@ -62,9 +82,17 @@ export default {
       notifications: null
     }
   },
+  computed: {
+    total: function() {
+
+      return this.notifications.data.filter(i => {
+        return !i.read_at
+      }).length
+    }
+  },
   created () {
     if (container.get('config').app.websocket.url) {
-      window.Echo.private('user.' + this.user.id).listen('NotificationEvent', (e) => {
+      window.Echo.private('user.' + this.user.id).listen('notification.new', (e) => {
         this.load()
 
         let key = `notification.${e.id}`;
@@ -128,6 +156,13 @@ export default {
       return 'fa fa-info text-info'
     },
 
+    hasAttachment (notification) {
+        return notification.data.options.url
+    },
+
+    downloadAttachment (notification) {
+        window.open(notification.data.options.url, '_blank')
+    },
     onClickNotification (notification) {
       var type = this.getNotificationType(notification)
 
@@ -138,7 +173,7 @@ export default {
       this.markAsRead(notification)
     },
     load () {
-      this.api.index({ show: 10, query: 'read_at is null', sort_field: 'created_at', sort_direction: 'DESC' }).then(response => {
+      this.api.index({ show: 10, sort_field: 'created_at', sort_direction: 'DESC' }).then(response => {
         this.notifications = response.body
       })
     }
@@ -190,5 +225,9 @@ export default {
 
   .notification-marker:hover {
       opacity: 0.9;
+  }
+
+  .disabled {
+    opacity: 0.9;
   }
 </style>
