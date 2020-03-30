@@ -4,7 +4,7 @@ import { container } from '@quartz/core'
 export class NotificationServiceProvider extends ServiceProvider {
   register() {
 
-    this.addRoutes(null, require('./../../routes/notification.js'))
+    this.addRoutes('app', require('./../../routes/notification.js'))
 
     this.addLang({
       'en': require('../../../lang/notification/en.json'),

@@ -23,10 +23,10 @@
       </v-subheader>
 
       <v-card>
-        <v-list class="pa-0" v-for="(notification, index) in notifications.data" :key="index"  v-if="notification.data.message" @click="markAsRead(notification)">
-          <v-list-item >
+        <v-list class="pa-0" v-for="(notification, index) in notifications.data" :key="index"  v-if="notification.data.message">
+          <v-list-item @click="markAsRead(notification)">
             <v-list-item-action class="mr-3">
-              <q-icon color="primary" v-if="!notification.read_at">lens</q-icon>
+              <q-icon color="primary" v-if="!notification.read_at" >lens</q-icon>
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title>
@@ -35,15 +35,14 @@
                 <span v-if="getNotificationType(notification) === 'error'">:
                   <small class='text-danger'>
                     {{ notification.data.options.error.message }}
-                    
                   </small>
                 </span>
 
-                <small class='text-info'>
-                  <div v-if="hasAttachment(notification)" @click="downloadAttachment(notification)">
-                    <a click='javascript:return;'>Download</a>
-                  </div>
-                </small>
+                <div>
+                  <small class='text-info' v-if="hasAttachment(notification)" @click="downloadAttachment(notification)">
+                      <a click='javascript:return;' ><q-icon color="primary" style='line-height:13px; font-size:14px'>attach_file</q-icon> Download</a>
+                  </small>
+                </div>
 
               </v-list-item-title>
 
@@ -173,7 +172,7 @@ export default {
       this.markAsRead(notification)
     },
     load () {
-      this.api.index({ show: 10, sort_field: 'created_at', sort_direction: 'DESC' }).then(response => {
+      this.api.index({ show: 10, sort: '-created_at'}).then(response => {
         this.notifications = response.body
       })
     }
