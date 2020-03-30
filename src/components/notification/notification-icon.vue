@@ -26,7 +26,7 @@
         <v-list class="pa-0" v-for="(notification, index) in notifications.data" :key="index"  v-if="notification.data.message">
           <v-list-item @click="markAsRead(notification)">
             <v-list-item-action class="mr-3">
-              <q-icon color="primary" v-if="!notification.read_at" >lens</q-icon>
+              <q-icon color="primary">lens</q-icon>
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title>
@@ -53,8 +53,20 @@
           <v-divider></v-divider>
         </v-list>
 
-        <v-list>
-          <v-list-item :to="{ name: 'notifications.user' }">
+
+        <v-list class="pa-0" v-if="notifications.data.length === 0">
+          <v-list-item >
+            <v-list-item-content>
+              <v-list-item-title>
+                No notifications
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-divider></v-divider>
+        </v-list>
+
+        <v-list class="pa-0">
+          <v-list-item  :to="{ name: 'notifications.user' }">
             <v-list-item-content>
               <v-list-item-title>
                 {{ $t('$quartz.notification.show_all') }}
@@ -172,7 +184,7 @@ export default {
       this.markAsRead(notification)
     },
     load () {
-      this.api.index({ show: 10, sort: '-created_at'}).then(response => {
+      this.api.index({ show: 10, sort: '-created_at', query: 'read_at is null'}).then(response => {
         this.notifications = response.body
       })
     }
