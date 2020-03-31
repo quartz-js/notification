@@ -59,31 +59,6 @@ export default {
       }).length
     }
   },
-  created () {
-    if (container.get('config').app.websocket.url) {
-      window.Echo.private('user.' + this.user.id).listen('notification.new', (e) => {
-        this.load()
-
-        let key = `notification.${e.id}`;
-
-        if (localStorage.getItem(key)) {
-          return;
-        }
-        
-        localStorage.setItem(key, 1);
-
-        setTimeout(function () {
-          localStorage.removeItem(key);
-        }, 10);
-
-        window.Notify.prompt(e.title, {
-          'body': e.message,
-          'icon': require('@/assets/logo.png')
-        }, () => {
-        }, 200)
-      })
-    }
-  },
   mounted () {
     this.api = this.$container.get('data-view').newApiByName('notification')
     this.load()
