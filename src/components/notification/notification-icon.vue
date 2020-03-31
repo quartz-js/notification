@@ -103,7 +103,7 @@ export default {
   },
   created () {
     if (container.get('config').app.websocket.url) {
-      window.Echo.private('user.' + this.user.id).listen('notification.new', (e) => {
+      window.Echo.private('user.' + this.user.id).listen('.notification.new', (e) => {
         this.load()
 
         let key = `notification.${e.id}`;
